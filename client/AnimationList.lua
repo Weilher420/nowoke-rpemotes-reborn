@@ -14130,44 +14130,6 @@ RP.PropEmotes = {
             EmoteLoop = true
         }
     },
-    ["guitar3"] = {
-        "amb@world_human_musician@guitar@male@idle_a",
-        "idle_b",
-        "Guitar 3 - Pink",
-        AnimationOptions = {
-            Prop = 'prop_rpemotesreborn_guitar_001',
-            PropBone = 24818,
-            PropPlacement = {
-                -0.1,
-                0.31,
-                0.1,
-                0.0,
-                20.0,
-                150.0
-            },
-            EmoteMoving = true,
-            EmoteLoop = true
-        }
-    },
-    ["guitar4"] = {
-        "switch@trevor@guitar_beatdown",
-        "001370_02_trvs_8_guitar_beatdown_idle_busker",
-        "Guitar 4 - Pink",
-        AnimationOptions = {
-            Prop = 'prop_rpemotesreborn_guitar_001',
-            PropBone = 24818,
-            PropPlacement = {
-                -0.05,
-                0.31,
-                0.1,
-                0.0,
-                20.0,
-                150.0
-            },
-            EmoteMoving = true,
-            EmoteLoop = true
-        }
-    },
     ["guitarelectric"] = {
         "amb@world_human_musician@guitar@male@idle_a",
         "idle_b",
@@ -14244,25 +14206,6 @@ RP.PropEmotes = {
             EmoteMoving = true
         }
    },
-    ["guitarcarry3"] = {
-        "move_weapon@jerrycan@generic",
-        "idle",
-        "Guitar Carry Accoustic - Pink",
-        AnimationOptions = {
-            Prop = "prop_rpemotesreborn_guitar_001",
-            PropBone = 28422,
-            PropPlacement = {
-                0.1500,
-                -0.1400,
-                -0.0200,
-                -101.5083,
-                5.7251,
-                29.4987
-            },
-            EmoteLoop = true,
-            EmoteMoving = true
-        }
-    },
     ["guitarcarry5"] = {
         "move_weapon@jerrycan@generic",
         "idle",
@@ -14364,26 +14307,6 @@ RP.PropEmotes = {
         "Guitar Sit And Play",
         AnimationOptions = {
             Prop = "prop_acc_guitar_01",
-            PropBone = 24818,
-            PropPlacement = {
-                -0.0510,
-                0.2770,
-                -0.0299,
-                -140.3349,
-                166.3300,
-                29.7590
-            },
-            EmoteLoop = true,
-            ExitEmote = "getup",
-            ExitEmoteType = "Exits"
-        }
-    },
-    ["guitarsit2"] = {
-        "misssnowie@gatlax",
-        "base",
-        "Guitar Sit And Play 2 - Pink",
-        AnimationOptions = {
-            Prop = "prop_rpemotesreborn_guitar_001",
             PropBone = 24818,
             PropPlacement = {
                 -0.0510,
