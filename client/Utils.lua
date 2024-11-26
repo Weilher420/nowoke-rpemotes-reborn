@@ -7,7 +7,7 @@ function SimpleNotify(message)
     else
         BeginTextCommandThefeedPost("STRING")
         AddTextComponentSubstringPlayerName(message)
-        EndTextCommandThefeedPostTicker(0, 1)
+        EndTextCommandThefeedPostTicker(true, true)
     end
 end
 
@@ -17,13 +17,13 @@ function DebugPrint(...)
     end
 end
 
-function firstToUpper(str)
+function FirstToUpper(str)
     return (str:gsub("^%l", string.upper))
 end
 
-
 function IsPlayerAiming(player)
-    return (IsPlayerFreeAiming(player) or IsAimCamActive() or IsAimCamThirdPersonActive()) and tonumber(GetSelectedPedWeapon(player)) ~= tonumber(GetHashKey("WEAPON_UNARMED"))
+    return (IsPlayerFreeAiming(player) or IsAimCamActive() or IsAimCamThirdPersonActive()) and
+    tonumber(GetSelectedPedWeapon(player)) ~= tonumber(GetHashKey("WEAPON_UNARMED"))
 end
 
 function CanPlayerCrouchCrawl(playerPed)
@@ -36,7 +36,8 @@ end
 
 function PlayAnimOnce(playerPed, animDict, animName, blendInSpeed, blendOutSpeed, duration, startTime)
     LoadAnim(animDict)
-    TaskPlayAnim(playerPed, animDict, animName, blendInSpeed or 2.0, blendOutSpeed or 2.0, duration or -1, 0, startTime or 0.0, false, false, false)
+    TaskPlayAnim(playerPed, animDict, animName, blendInSpeed or 2.0, blendOutSpeed or 2.0, duration or -1, 0,
+        startTime or 0.0, false, false, false)
     RemoveAnimDict(animDict)
 end
 
@@ -53,12 +54,15 @@ end
 
 function EmoteChatMessage(msg, multiline)
     if msg then
-        TriggerEvent("chat:addMessage",
-            { multiline = multiline == true or false, color = { 255, 255, 255 }, args = { "^1Help^0", tostring(msg) } })
+        TriggerEvent("chat:addMessage", {
+            multiline = multiline == true or false,
+            color = { 255, 255, 255 },
+            args = { "^1Help^0", tostring(msg) }
+        })
     end
 end
 
-function pairsByKeys(t, f)
+function PairsByKeys(t, f)
     local a = {}
     for n in pairs(t) do
         table.insert(a, n)
@@ -111,7 +115,7 @@ function LoadPropDict(model)
     end
 end
 
-function tableHasKey(table, key)
+function TableHasKey(table, key)
     return table[key] ~= nil
 end
 
@@ -123,21 +127,20 @@ function RequestWalking(set)
     end
 end
 
-
 function GetPedInFront()
     local player = PlayerId()
     local plyPed = GetPlayerPed(player)
     local plyPos = GetEntityCoords(plyPed, false)
     local plyOffset = GetOffsetFromEntityInWorldCoords(plyPed, 0.0, 1.3, 0.0)
     local rayHandle = StartShapeTestCapsule(plyPos.x, plyPos.y, plyPos.z, plyOffset.x, plyOffset.y, plyOffset.z, 10.0, 12
-        , plyPed, 7)
+    , plyPed, 7)
     local _, _, _, _, ped2 = GetShapeTestResult(rayHandle)
     return ped2
 end
 
 function NearbysOnCommand(source, args, raw)
     local NearbysCommand = ""
-    for a in pairsByKeys(RP.Shared) do
+    for a in PairsByKeys(RP.Shared) do
         NearbysCommand = NearbysCommand .. "" .. a .. ", "
     end
     EmoteChatMessage(NearbysCommand)
@@ -148,15 +151,15 @@ function GetClosestPlayer()
     local players = GetPlayers()
     local closestDistance = -1
     local closestPlayer
-    local ply = PlayerPedId()
-    local plyCoords = GetEntityCoords(ply, 0)
+    local ped = PlayerPedId()
+    local pedCoords = GetEntityCoords(ped, false)
 
     for index, value in ipairs(players) do
         local target = GetPlayerPed(value)
-        if (target ~= ply) then
-            local targetCoords = GetEntityCoords(GetPlayerPed(value), 0)
+        if (target ~= ped) then
+            local targetCoords = GetEntityCoords(GetPlayerPed(value), false)
             local distance = GetDistanceBetweenCoords(targetCoords["x"], targetCoords["y"], targetCoords["z"],
-                plyCoords["x"], plyCoords["y"], plyCoords["z"], true)
+                pedCoords["x"], pedCoords["y"], pedCoords["z"], true)
             if (closestDistance == -1 or closestDistance > distance) then
                 closestPlayer = value
                 closestDistance = distance
@@ -181,7 +184,7 @@ end
 -- Function that'll check if player is already proning, using news cam or else
 
 ---@param ignores? table | nil key string is the ignored value
-function isInActionWithErrorMessage(ignores)
+function IsInActionWithErrorMessage(ignores)
     DebugPrint(ignores)
     DebugPrint('IsProne', IsProne)
     DebugPrint('IsUsingNewscam', IsUsingNewscam)
@@ -215,17 +218,18 @@ function ShowPedMenu(zoom)
 
     if not ShowPed then
         CreateThread(function()
-            clonedPed = CreatePed(26, GetEntityModel(PlayerPedId()), nil, nil, nil, 0, false, false)
-            ClonePedToTarget(PlayerPedId(), clonedPed)
+            local coords = GetEntityCoords(PlayerPedId()) - vector3(0.0, 0.0, 10.0)
+            ClonedPed = CreatePed(26, GetEntityModel(PlayerPedId()), coords.x, coords.y, coords.z, 0, false, false)
+            ClonePedToTarget(PlayerPedId(), ClonedPed)
 
-            SetEntityCollision(clonedPed, false, false)
-            SetEntityInvincible(clonedPed, true)
-            SetEntityLocallyVisible(clonedPed)
+            SetEntityCollision(ClonedPed, false, false)
+            SetEntityInvincible(ClonedPed, true)
+            SetEntityLocallyVisible(ClonedPed)
 
-            NetworkSetEntityInvisibleToNetwork(clonedPed, true)
-            SetEntityCanBeDamaged(clonedPed, false)
-            SetBlockingOfNonTemporaryEvents(clonedPed, true)
-            SetEntityAlpha(clonedPed, 254, false)
+            NetworkSetEntityInvisibleToNetwork(ClonedPed, true)
+            SetEntityCanBeDamaged(ClonedPed, false)
+            SetBlockingOfNonTemporaryEvents(ClonedPed, true)
+            SetEntityAlpha(ClonedPed, 254, false)
 
             ShowPed = true
 
@@ -238,7 +242,7 @@ function ShowPedMenu(zoom)
                     if Config.MenuPosition == "left" then
                         screencoordsX = 1.0 - screencoordsX
                     end
-                    local world, normal =  GetWorldCoordFromScreenCoord(screencoordsX, screencoordsY) --  GetWorldCoordFromScreenCoord(0.67135417461395, 0.7787036895752)
+                    local world, normal = GetWorldCoordFromScreenCoord(screencoordsX, screencoordsY)  --  GetWorldCoordFromScreenCoord(0.67135417461395, 0.7787036895752)
                     local depth = 3.5
                     local target = world + normal * depth
                     local camRot = GetGameplayCamRot(2)
@@ -254,10 +258,11 @@ function ShowPedMenu(zoom)
                     end
                     averagedTarget = averagedTarget / #positionBuffer
 
-                    SetEntityCoords(clonedPed, averagedTarget.x, averagedTarget.y, averagedTarget.z, false, false, false, true)
+                    SetEntityCoords(ClonedPed, averagedTarget.x, averagedTarget.y, averagedTarget.z, false, false, false,
+                        true)
                     local heading_offset = Config.MenuPosition == "left" and 170.0 or 190.0
-                    SetEntityHeading(clonedPed, camRot.z + heading_offset)
-                    SetEntityRotation(clonedPed, camRot.x*(-1), 0, camRot.z + 170.0, 2, false)
+                    SetEntityHeading(ClonedPed, camRot.z + heading_offset)
+                    SetEntityRotation(ClonedPed, camRot.x * (-1), 0, camRot.z + 170.0, 2, false)
 
                     Wait(4)
                 end
@@ -283,10 +288,11 @@ function ShowPedMenu(zoom)
                     end
                     averagedTarget = averagedTarget / #positionBuffer
 
-                    SetEntityCoords(clonedPed, averagedTarget.x, averagedTarget.y, averagedTarget.z, false, false, false, true)
+                    SetEntityCoords(ClonedPed, averagedTarget.x, averagedTarget.y, averagedTarget.z, false, false, false,
+                        true)
                     local heading_offset = Config.MenuPosition == "left" and 170.0 or 190.0
-                    SetEntityHeading(clonedPed, camRot.z + heading_offset)
-                    SetEntityRotation(clonedPed, camRot.x*(-1), 0, camRot.z + 170.0, 2, false)
+                    SetEntityHeading(ClonedPed, camRot.z + heading_offset)
+                    SetEntityRotation(ClonedPed, camRot.x * (-1), 0, camRot.z + 170.0, 2, false)
 
                     Wait(4)
                 end
@@ -298,18 +304,18 @@ end
 function ClosePedMenu()
     if not Config.PreviewPed then return end
 
-    if clonedPed then
+    if ClonedPed then
         ShowPed = false
         ClearPedTaskPreview()
-        DeleteEntity(clonedPed)
+        DeleteEntity(ClonedPed)
     end
 end
 
 function ClearPedTaskPreview()
     if not Config.PreviewPed then return end
 
-    if clonedPed then
+    if ClonedPed then
         DestroyAllProps(true)
-        ClearPedTasksImmediately(clonedPed)
+        ClearPedTasksImmediately(ClonedPed)
     end
 end
